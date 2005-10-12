@@ -1,5 +1,5 @@
-from unittest import TestSuite, TestCase, TextTestRunner, makeSuite
-from opensearch import Description, Client
+from unittest import TestCase
+from opensearch import Description
 
 class DescriptionTests(TestCase):
 

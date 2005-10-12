@@ -2,9 +2,11 @@
 
 from unittest import TestSuite, TextTestRunner, makeSuite
 from test.description import DescriptionTests
+from test.query import QueryTests
 
 suite = TestSuite()
 suite.addTest(makeSuite(DescriptionTests, 'test'))
+suite.addTest(makeSuite(QueryTests, 'test'))
 runner = TextTestRunner(verbosity=2)
 runner.run(suite)
 
