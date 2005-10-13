@@ -3,10 +3,12 @@
 from unittest import TestSuite, TextTestRunner, makeSuite
 from test.description import DescriptionTests
 from test.query import QueryTests
+from test.client import ClientTests
 
 suite = TestSuite()
 suite.addTest(makeSuite(DescriptionTests, 'test'))
 suite.addTest(makeSuite(QueryTests, 'test'))
+suite.addTest(makeSuite(ClientTests, 'test'))
 runner = TextTestRunner(verbosity=2)
 runner.run(suite)
 
