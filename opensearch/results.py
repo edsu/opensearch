@@ -4,6 +4,7 @@ class Results(object):
 
     def __init__(self,query):
         self._fetch(query)
+        self._iter = 0
 
     def __iter__(self):
         self._iter = 0
@@ -50,9 +51,9 @@ class Results(object):
         self.copyright = _pick(channel,'copyright')
 
         # get back opensearch specific values
-        self.totalResults = int(_pick(channel,'opensearch_totalresults'))
-        self.startIndex = int(_pick(channel,'opensearch_startindex')) 
-        self.itemsPerPage = int(_pick(channel,'opensearch_itemsperpage'))
+        self.totalResults = int(_pick(channel,'opensearch_totalresults',0))
+        self.startIndex = int(_pick(channel,'opensearch_startindex',1)) 
+        self.itemsPerPage = int(_pick(channel,'opensearch_itemsperpage',0))
 
         # alias items from the feed to our results object
         self.items = feed['items']
@@ -102,8 +103,7 @@ class Results(object):
 
 
 # helper for pulling values out of a dictionary if they're there
-def _pick(d,key):
+def _pick(d,key,default=None):
     if d.has_key(key):
         return d[key]
-    return None
-        
+    return default

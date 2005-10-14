@@ -30,7 +30,7 @@ class Client:
         query = Query(self.description.url)
 
         # set up initial values
-        query.search_terms = search_terms
+        query.searchTerms = search_terms
         query.count = page_size
 
         # run the results
