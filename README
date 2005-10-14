@@ -1,0 +1,16 @@
+opensearch is a python library for talking to opensearch servers.
+You can find out more about opensearch at <http://opensearch.a9.com>.
+
+Basic usage is:
+
+    from opensearch import Client
+
+    client = Client(description_url)
+    results = client.search("computer")
+
+    for result in results:
+        print result.title, result.link
+
+Questions and comments are welcome at ehs@pobox.com. This code has 
+been released under the Artistic License
+<http://www.opensource.org/licenses/artistic-license.php>
