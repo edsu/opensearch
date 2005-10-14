@@ -9,8 +9,8 @@ class Query:
 
     format = 'http://beta.indeed.com/opensearch?q={searchTerms}&start={startIndex}&limit={count}'
     q = Query(format)
-    q.search_terms('zx81')
-    q.start_index = 1
+    q.searchTerms('zx81')
+    q.startIndex = 1
     q.count = 25
     print q.to_url()
     """
@@ -59,4 +59,7 @@ class Query:
 
         # recompose and return url
         return urlunparse(tuple(url_parts))
+
+    def has_macro(self, macro):
+        return self.macro_map.has_key(macro)
 
