@@ -6,6 +6,6 @@ class ClientTests(TestCase):
     url = 'http://www.koders.com/search/KodersSourceCodeSearchDescription.xml'
 
     def test_query(self):
-        pass
-        #client = Client(ClientTests.url)
-        #results = client.search("computer")
+        client = Client(ClientTests.url)
+        results = client.search("computer")
+        assert(results.totalResults > 0)
