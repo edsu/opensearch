@@ -6,6 +6,7 @@ v0.2
 - added tests of v1.1 targets in test/version1_1.py
 - added Changes file
 - added latest feedparser for atom1.0 support
+- modified Query to recognize optional search parameters {startIndex?}
 
 v0.1  Tue Oct 14 08:19:57 EST 2006
 - initial version

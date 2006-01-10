@@ -15,7 +15,7 @@ class Query:
     print q.to_url()
     """
 
-    standard_macros = ['{searchTerms}','{count}','{startIndex}','{startPage}']
+    standard_macros = ['searchTerms','count','startIndex','startPage']
 
     def __init__(self, format):
         """Create a query object by passing it the url format obtained
@@ -34,11 +34,9 @@ class Query:
         # so q={searchTerms} will result in a mapping between searchTerms and q
         self.macro_map = {}
         for key,values in self.query_string.items():
-            if values[0] not in Query.standard_macros:
-                continue
-            macro = values[0].replace('{','').replace('}','')
-            self.macro_map[macro] = key
-
+            macro = values[0].replace('{','').replace('}','').replace('?','')
+            if macro in Query.standard_macros:
+                self.macro_map[macro] = key
 
     def url(self):
         # copy the original query string

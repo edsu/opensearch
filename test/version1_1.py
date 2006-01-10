@@ -4,6 +4,7 @@ from opensearch import Description, Client
 class Version1_1Tests(TestCase):
 
     atom_v1_1 = 'http://hublog.hubmed.org/opensearchdescription.xml'
+    rss_v1_1 = 'http://a9.com/-/opensearch/public/osd'
 
     def test_description(self):
         desc = Description(self.atom_v1_1)
@@ -30,8 +31,13 @@ class Version1_1Tests(TestCase):
         url = desc.get_url_by_type('application/rss+xml')
         self.assertTrue(url == None)
 
-    def test_query(self):
+    def test_atom_query(self):
         client = Client(self.atom_v1_1)
+        results = client.search('perl')
+        self.assertTrue(results.totalResults > 0)
+
+    def test_rss_query(self):
+        client = Client(self.rss_v1_1)
         results = client.search('perl')
         self.assertTrue(results.totalResults > 0)
 

@@ -16,6 +16,12 @@ Basic usage is:
     for result in results:
         print result.title, result.link
 
+ToDo:
+
+- handle v1.1 that want a POST instead of a GET
+- recognize optional vs required template parameters
+- some nice documentation
+
 Questions and comments are welcome at ehs@pobox.com. This code has 
 been released under the Artistic License
 <http://www.opensource.org/licenses/artistic-license.php>
