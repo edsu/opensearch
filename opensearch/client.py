@@ -26,8 +26,8 @@ class Client:
     def search(self, search_terms, page_size=25):
         """Perform a search and get back a results object
         """
-        # get a query object
-        query = Query(self.description.url)
+        url = self.description.get_best_template()
+        query = Query(url)
 
         # set up initial values
         query.searchTerms = search_terms

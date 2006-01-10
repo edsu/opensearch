@@ -22,7 +22,7 @@ if sys.version_info < (2, 3):
 
 setup( 
     name             = 'opensearch',
-    version          = '0.1',
+    version          = '0.2',
     url              = 'http://www.textualize.com/opensearch',
     download_url     = 'http://www.textualize.com/archive/opensearch/latest.tar.gz',
     author           = 'Ed Summers',

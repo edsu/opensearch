@@ -1,0 +1,11 @@
+v0.2
+- added URL class for working with opensearch v1.1
+- modified Client to select the best template target with a new method in 
+  Description called select_best_template, it prefers atom to rss, and rss
+  to vanilla xml, or the first template available
+- added tests of v1.1 targets in test/version1_1.py
+- added Changes file
+- added latest feedparser for atom1.0 support
+
+v0.1  Tue Oct 14 08:19:57 EST 2006
+- initial version
