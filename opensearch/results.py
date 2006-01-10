@@ -1,4 +1,4 @@
-from opensearch import feedparser
+from opensearch import osfeedparser
 
 class Results(object):
 
@@ -40,7 +40,7 @@ class Results(object):
 
 
     def _fetch(self, query):
-        feed  = feedparser.parse(query.url())
+        feed  = osfeedparser.parse(query.url())
 
         # general channel stuff
         channel = feed['feed']
