@@ -5,6 +5,7 @@ class Version1_1Tests(TestCase):
 
     atom_v1_1 = 'http://hublog.hubmed.org/opensearchdescription.xml'
     rss_v1_1 = 'http://a9.com/-/opensearch/public/osd'
+    rss2_v1_1 = 'http://www.hhpl.on.ca/GreatLakes/GLImages/Opensearch/GreatLakesImages.xml'
 
     def test_description(self):
         desc = Description(self.atom_v1_1)
@@ -39,5 +40,10 @@ class Version1_1Tests(TestCase):
     def test_rss_query(self):
         client = Client(self.rss_v1_1)
         results = client.search('perl')
+        self.assertTrue(results.totalResults > 0)
+
+    def test_missing_results(self):
+        client = Client(self.rss2_v1_1)
+        results = client.search('lewis')
         self.assertTrue(results.totalResults > 0)
 

@@ -105,5 +105,8 @@ class Results(object):
 # helper for pulling values out of a dictionary if they're there
 def _pick(d,key,default=None):
     if d.has_key(key):
+        # don't want to return '' if they want an int
+        if type(default) == int and d[key] == '':
+            return 0
         return d[key]
     return default
