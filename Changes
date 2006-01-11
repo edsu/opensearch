@@ -9,12 +9,10 @@ v0.2
 - modified Query to recognize optional search parameters {startIndex?}
 - added support for empty totalResults, startIndex, itemsPerPage coming back 
   in responses
-- for some reason sometimes opensearch namespaced elements are turning up 
-  in feedparser with the opensearch_ prefix and other times without it. 
-  this should be investigated but for the moment, Results will look for 
-  data points in both places
 - renamed feedparser.py to osfeedparser.py, and parse() to opensearch_parser()
   to avoid import confusion
+- added common opensearch namespaces to osfeedparser so that they are pulled out
+  with prepended opensearch_ prefix
 
 v0.1  Tue Oct 14 08:19:57 EST 2006
 - initial version
