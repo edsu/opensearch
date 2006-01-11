@@ -41,6 +41,7 @@ class Results(object):
 
     def _fetch(self, query):
         feed  = osfeedparser.opensearch_parse(query.url())
+        self.feed = feed
 
         # general channel stuff
         channel = feed['feed']
@@ -109,11 +110,4 @@ def _pick(d,key,default=None):
         if type(default) == int and d[key] == '':
             return 0
         return d[key]
-
-    # look one more time without the opensearch_ prefix
-    # for some reason some feedparsers don't add this
-    # TODO: figure out why
-    if 'opensearch_' in key:
-        return _pick(d,key.replace('opensearch_',''),default)
-
     return default

@@ -351,7 +351,9 @@ class _FeedParserMixin:
                   'http://purl.org/rss/1.0/modules/wiki/':                'wiki',
                   'http://www.w3.org/1999/xhtml':                         'xhtml',
                   'http://www.w3.org/XML/1998/namespace':                 'xml',
-                  'http://schemas.pocketsoap.com/rss/myDescModule/':      'szf'
+                  'http://schemas.pocketsoap.com/rss/myDescModule/':      'szf',
+                  'http://a9.com/-/spec/opensearch/1.1/':                 'opensearch',
+                  'http://a9.com/-/spec/opensearchrss/1.0/':              'opensearch'
 }
     _matchnamespaces = {}
 
