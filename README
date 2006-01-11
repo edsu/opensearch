@@ -11,12 +11,12 @@ Basic usage is:
     from opensearch import Client
 
     client = Client(description_url)
-    results = client.search("computer")
+    results = client.search('computer')
 
     for result in results:
         print result.title, result.link
 
-ToDo:
+To Do:
 
 - handle v1.1 that want a POST instead of a GET
 - recognize optional vs required template parameters
