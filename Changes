@@ -1,3 +1,8 @@
+v0.3
+- added some missing query parameters (from v1.1) to query.py
+- fixed whitespace problem in Description._get_text (thanks Rob Sanderson)
+- added a few macros
+
 v0.2    Tue Jan 10 22:58:54 EST 2006
 - added URL class for working with opensearch v1.1
 - modified Client to select the best template target with a new method in 

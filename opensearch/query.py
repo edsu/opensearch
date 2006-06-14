@@ -15,7 +15,8 @@ class Query:
     print q.to_url()
     """
 
-    standard_macros = ['searchTerms','count','startIndex','startPage']
+    standard_macros = ['searchTerms','count','startIndex','startPage', 
+        'language', 'outputEncoding', 'inputEncoding']
 
     def __init__(self, format):
         """Create a query object by passing it the url format obtained

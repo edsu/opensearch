@@ -110,7 +110,7 @@ class Description:
         for node in nodes:
             if node.nodeType == node.TEXT_NODE:
                 text += node.data
-        return text
+        return text.strip()
 
     def _get_urls(self):
         urls = []
