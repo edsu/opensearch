@@ -10,6 +10,9 @@ class Results(object):
         self._iter = 0
         return self
 
+    def __len__(self):
+      return self.totalResults
+
     def next(self):
 
         # just keep going like the energizer bunny
