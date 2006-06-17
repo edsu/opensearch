@@ -1,7 +1,9 @@
-v0.3
+v0.3    Fri Jun 16 19:18:21 EST 2006
 - added some missing query parameters (from v1.1) to query.py
 - fixed whitespace problem in Description._get_text (thanks Rob Sanderson)
 - added a few macros
+- catch exceptions in results.py _pick() when an integer is desired but the
+  string is very unint like. Thanks Rob. 
 
 v0.2    Tue Jan 10 22:58:54 EST 2006
 - added URL class for working with opensearch v1.1

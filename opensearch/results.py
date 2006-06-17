@@ -55,9 +55,9 @@ class Results(object):
         self.copyright = _pick(channel,'copyright')
 
         # get back opensearch specific values
-        self.totalResults = int(_pick(channel,'opensearch_totalresults',0))
-        self.startIndex = int(_pick(channel,'opensearch_startindex',1)) 
-        self.itemsPerPage = int(_pick(channel,'opensearch_itemsperpage',0))
+        self.totalResults = _pick(channel,'opensearch_totalresults',0)
+        self.startIndex = _pick(channel,'opensearch_startindex',1) 
+        self.itemsPerPage = _pick(channel,'opensearch_itemsperpage',0)
 
         # alias items from the feed to our results object
         self.items = feed['items']
@@ -107,10 +107,24 @@ class Results(object):
 
 
 # helper for pulling values out of a dictionary if they're there
+# and returning a default value if they're not
 def _pick(d,key,default=None):
-    if d.has_key(key):
-        # don't want to return '' if they want an int
-        if type(default) == int and d[key] == '':
-            return 0
-        return d[key]
-    return default
+
+    # get the value out
+    value = d.get(key)
+  
+    # if it wasn't there return the default
+    if value == None:
+        return default
+
+    # if they want an int try to convert to an int
+    # and return default if it fails
+    if type(default) == int:
+        try:
+            return int(d[key])
+        except:
+            return default
+
+    # otherwise we're good to return the value
+    return value
+
