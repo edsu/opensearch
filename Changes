@@ -1,3 +1,7 @@
+v0.4    Fri Oct  6 10:10:53 EDT 2006
+- new GPL license for Gnome people
+- removed tests of dead sites
+
 v0.3    Fri Jun 16 19:18:21 EST 2006
 - added some missing query parameters (from v1.1) to query.py
 - fixed whitespace problem in Description._get_text (thanks Rob Sanderson)

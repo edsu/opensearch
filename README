@@ -1,3 +1,8 @@
+opensearch
+----------
+
+DESCRIPTION:
+
 opensearch is a python library for talking to opensearch servers.
 Both version1.0 and version1.1 interactions are supported. The homepage
 for this package can be found at:
@@ -6,7 +11,7 @@ for this package can be found at:
 
 You can find out more about opensearch at <http://opensearch.a9.com>.
 
-Basic usage is:
+USAGE:
 
     from opensearch import Client
 
@@ -16,12 +21,21 @@ Basic usage is:
     for result in results:
         print result.title, result.link
 
-To Do:
+TODO:
 
 - handle v1.1 that want a POST instead of a GET
 - recognize optional vs required template parameters
 - some nice documentation
 
-Questions and comments are welcome at ehs@pobox.com. This code has 
-been released under the Artistic License
-<http://www.opensource.org/licenses/artistic-license.php>
+LICENSE:
+
+The opensearch code itself has been released under the GPL
+<http://www.opensource.org/licenses/gpl-license.php>. 
+
+One exception is that the distro bundles Mark Pilgrim's Universal Feed 
+Parser, which is licensed separately under the MIT license. See 
+opensearch/osfeedparser.py for details on Mark's license.
+
+AUTHOR:
+
+Ed Summers <ehs@pobox.com>

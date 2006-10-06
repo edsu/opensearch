@@ -22,12 +22,12 @@ if sys.version_info < (2, 3):
 
 setup( 
     name             = 'opensearch',
-    version          = '0.3',
+    version          = '0.4',
     url              = 'http://www.textualize.com/opensearch',
     download_url     = 'http://www.textualize.com/archive/opensearch/latest.tar.gz',
     author           = 'Ed Summers',
     author_email     = 'ehs@pobox.com',
-    license          = 'http://www.opensource.org/licenses/artistic-license.php',
+    license          = 'http://www.opensource.org/licenses/gpl-license.php',
     packages         = [ 'opensearch' ],
     description      = "Interact with opensearch services",
     classifiers      = filter( None, classifiers.split("\n") ),
