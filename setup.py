@@ -5,7 +5,7 @@ classifiers = """\
 Intended Audience :: Education
 Intended Audience :: Developers
 Intended Audience :: Information Technology
-License :: OSI Approved :: BSD License
+License :: OSI Approved :: GNU General Public License (GPL)
 Programming Language :: Python
 Topic :: Text Processing :: General
 """

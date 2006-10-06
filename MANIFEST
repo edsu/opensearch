@@ -14,4 +14,3 @@ test/client.py
 test/description.py
 test/query.py
 test/results.py
-test/version1_1.py
