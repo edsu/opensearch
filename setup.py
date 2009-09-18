@@ -1,5 +1,6 @@
 import sys
 from distutils.core import setup
+from setuptools import find_packages
 
 classifiers = """\
 Intended Audience :: Education
@@ -22,13 +23,12 @@ if sys.version_info < (2, 3):
 
 setup( 
     name             = 'opensearch',
-    version          = '0.4',
-    url              = 'http://www.textualize.com/opensearch',
-    download_url     = 'http://www.textualize.com/archive/opensearch/latest.tar.gz',
+    version          = '0.7',
+    url              = 'http://pypi.python.org/pypi/opensearch/',
     author           = 'Ed Summers',
     author_email     = 'ehs@pobox.com',
     license          = 'http://www.opensource.org/licenses/gpl-license.php',
-    packages         = [ 'opensearch' ],
+    packages         = find_packages(),
     description      = "Interact with opensearch services",
     classifiers      = filter( None, classifiers.split("\n") ),
 )

@@ -1,7 +1,5 @@
-Changes
 README
 setup.py
-test.py
 opensearch/__init__.py
 opensearch/client.py
 opensearch/description.py
@@ -9,8 +7,3 @@ opensearch/osfeedparser.py
 opensearch/query.py
 opensearch/results.py
 opensearch/url.py
-test/__init__.py
-test/client.py
-test/description.py
-test/query.py
-test/results.py
