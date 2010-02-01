@@ -14,7 +14,7 @@ Topic :: Text Processing :: General
 setup( 
     name             = 'opensearch',
     version          = '0.8',
-    url              = 'http://pypi.python.org/pypi/opensearch/',
+    url              = 'http://github.com/edsu/opensearch',
     author           = 'Ed Summers',
     author_email     = 'ehs@pobox.com',
     license          = 'http://www.opensource.org/licenses/gpl-license.php',
