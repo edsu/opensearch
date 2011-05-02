@@ -2,8 +2,8 @@ from opensearch import osfeedparser
 
 class Results(object):
 
-    def __init__(self,query):
-        self._fetch(query)
+    def __init__(self, query, agent=""):
+        self._fetch(query, agent)
         self._iter = 0
 
     def __iter__(self):
@@ -42,8 +42,8 @@ class Results(object):
                 raise StopIteration
 
 
-    def _fetch(self, query):
-        feed  = osfeedparser.opensearch_parse(query.url())
+    def _fetch(self, query, agent):
+        feed  = osfeedparser.opensearch_parse(query.url(), agent=agent)
         self.feed = feed
 
         # general channel stuff

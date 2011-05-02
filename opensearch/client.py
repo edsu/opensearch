@@ -20,8 +20,9 @@ class Client:
         print result.title
     """
 
-    def __init__(self, url):
-        self.description = Description(url)
+    def __init__(self, url, agent="OpenSearch Python"):
+        self.agent = agent
+        self.description = Description(url, self.agent)
 
     def search(self, search_terms, page_size=25):
         """Perform a search and get back a results object
@@ -34,5 +35,5 @@ class Client:
         query.count = page_size
 
         # run the results
-        return Results(query)
+        return Results(query, self.agent)
 
