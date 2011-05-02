@@ -1,4 +1,4 @@
-from urllib2 import urlopen
+from urllib2 import urlopen, Request
 from xml.dom.minidom import parse
 from url import URL
 
@@ -6,11 +6,12 @@ class Description:
     """A class for representing OpenSearch Description files.
     """
 
-    def __init__(self, url=""):
+    def __init__(self, url="", agent=""):
         """The constructor which may pass an optional url to load from.
 
         d = Description("http://www.example.com/description")
         """
+        self.agent = agent
         if url: 
             self.load(url)
 
@@ -19,7 +20,8 @@ class Description:
         """For loading up a description object from a url. Normally
         you'll probably just want to pass a URL into the constructor.
         """
-        self.dom = parse(urlopen(url))
+        req = Request(url, headers={'User-Agent':self.agent})
+        self.dom = parse(urlopen(req))
 
         # version 1.1 has repeating Url elements
         self.urls = self._get_urls()
