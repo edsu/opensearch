@@ -1,2 +1,3 @@
 *.pyc
 opensearch.egg-info
+dist
