@@ -20,7 +20,7 @@ class Client:
         print result.title
     """
 
-    def __init__(self, url, agent="OpenSearch Python"):
+    def __init__(self, url, agent="python-opensearch <https://github.com/edsu/opensearch>"):
         self.agent = agent
         self.description = Description(url, self.agent)
 
@@ -35,5 +35,5 @@ class Client:
         query.count = page_size
 
         # run the results
-        return Results(query, self.agent)
+        return Results(query, agent=self.agent)
 

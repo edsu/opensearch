@@ -13,7 +13,7 @@ Topic :: Text Processing :: General
 
 setup( 
     name             = 'opensearch',
-    version          = '0.8',
+    version          = '0.9',
     url              = 'http://github.com/edsu/opensearch',
     author           = 'Ed Summers',
     author_email     = 'ehs@pobox.com',
