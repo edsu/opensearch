@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearchdescription/1.0/">
+  <Url>http://www.koders.com/?s={searchTerms}&amp;p={startPage}&amp;output=rss</Url>
+  <Format>http://a9.com/-/spec/opensearchrss/1.0/</Format>
+  <ShortName>Koders</ShortName>
+  <LongName>Koders Source Code Search</LongName>
+  <Description>Search open source code on Koders.com. Supports languages such as java, c, c++, c#, php, perl, python, and many others.</Description>
+  <Tags>koders source code open-source programming software</Tags>
+  <Image>http://www.koders.com/images/koders_icon64x64.gif</Image>
+  <SampleSearch>calculator</SampleSearch>
+  <Developer>Koders Inc.</Developer>
+  <Contact>webmaster@koders.com</Contact>
+  <Attribution>&amp;copy; 2005, Koders Inc., All Rights Reserved.</Attribution>
+  <SyndicationRight>open</SyndicationRight>
+  <AdultContent>false</AdultContent>
+</OpenSearchDescription>

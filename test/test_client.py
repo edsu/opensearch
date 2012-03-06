@@ -3,7 +3,7 @@ from unittest import TestCase
 
 class ClientTests(TestCase):
 
-    url = 'http://www.koders.com/search/KodersSourceCodeSearchDescription.xml'
+    url = 'file:test/description.xml'
 
     def test_query(self):
         client = Client(ClientTests.url)

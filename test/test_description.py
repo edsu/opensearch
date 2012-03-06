@@ -4,12 +4,12 @@ from opensearch import Description
 class DescriptionTests(TestCase):
 
     # just grab the description once for all these tests
-    url = 'http://www.koders.com/search/KodersSourceCodeSearchDescription.xml'
+    url = 'file:test/description.xml'
     desc = Description(url)
 
     def test_url(self):
         self.assertEqual(self.desc.url,
-            'http://www.koders.com/?s={searchTerms}&p={startPage}&output=rss' )
+            'http://www.koders.com/?s={searchTerms}&p={startPage}&output=rss')
 
     def test_format(self):
         self.assertEqual(self.desc.format, 
@@ -50,5 +50,3 @@ class DescriptionTests(TestCase):
 
     def test_adultcontent(self):
         self.assertEqual(self.desc.adultcontent, False)
-
-
