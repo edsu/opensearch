@@ -1,16 +1,9 @@
 opensearch
 ==========
 
-Description
------------
-
 opensearch is a python library for talking to opensearch servers.
-Both version1.0 and version1.1 interactions are supported. The homepage
-for this package can be found at:
-
-    http://github.com/edsu/opensearch    
-
-You can find out more about opensearch at <http://opensearch.a9.com>.
+Both v1.0 and v1.1 interactions are supported.  You can find out more 
+about opensearch at [opensearch.org](http://opensearch.org).
 
 Usage
 -----
