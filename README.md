@@ -61,6 +61,7 @@ To Do
 -----
 
 - handle v1.1 that want a POST instead of a GET
+- figure out if the latest feedparser can be used as a dependency
 - validate required parameters
 
 License
