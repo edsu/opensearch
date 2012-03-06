@@ -20,7 +20,7 @@ for result in results:
     print result.title, result.link
 ```
 
-If you have a template with some non-standard query parameters like 'key' in
+If you have a template with some non-standard query parameters like `key` in
 this template:
 
 ```xml
@@ -33,14 +33,14 @@ you can send the parameter like so:
 results = client.search('zx81', key="abc123")
 ```
 
-If the template happens to use a namespace, as in this real example from the
-OCLC Worldcat API:
+If the template happens to use a namespace prefix, as in this real example 
+from the OCLC Worldcat API, which uses `wcapi:wskey`:
 
 ```xml
 <Url type="application/atom+xml" xmlns:wcapi="http://www.worldcat.org/devnet/wiki/SearchAPIDetails" template="http://worldcat.org/webservices/catalog/search/worldcat/opensearch?q={searchTerms}&amp;start={startIndex?}&amp;count={resultSize?}&amp;format=atom&amp;wskey={wcapi:wskey}&amp;cformat={wcapi:cformat?}"/>
 ```
 
-You can access it with the underscore notation:
+You can supply `wcapi:wskey` using the underscore notation:
 
 ```python
 results = client.search('zx81', wcapi__wskey="abc123")
