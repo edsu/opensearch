@@ -17,41 +17,41 @@ Usage
 
 Here's the basic idea:
 
-    ```python
-    from opensearch import Client
+```python
+from opensearch import Client
 
-    client = Client(description_url)
-    results = client.search('zx81')
+client = Client(description_url)
+results = client.search('zx81')
 
-    for result in results:
-        print result.title, result.link
-    ```
+for result in results:
+    print result.title, result.link
+```
 
 If you have a template with some non-standard query parameters like 'key' in
 this template:
 
-    ```xml
-       <Url type="application/atom+xml" template="http://example.org/search?q={searchTerms}&amp;start={startIndex?}&amp;count={resultSize?}&amp;key={key}"/>
-    ```
+```xml
+   <Url type="application/atom+xml" template="http://example.org/search?q={searchTerms}&amp;start={startIndex?}&amp;count={resultSize?}&amp;key={key}"/>
+```
 
 you can send the parameter like so:
 
-    ```python
-    results = client.search('zx81', key="abc123")
-    ```
+```python
+results = client.search('zx81', key="abc123")
+```
 
 If the template happens to use a namespace, as in this real example from the
 OCLC Worldcat API:
 
-    ```xml
-    <Url type="application/atom+xml" xmlns:wcapi="http://www.worldcat.org/devnet/wiki/SearchAPIDetails" template="http://worldcat.org/webservices/catalog/search/worldcat/opensearch?q={searchTerms}&amp;start={startIndex?}&amp;count={resultSize?}&amp;format=atom&amp;wskey={wcapi:wskey}&amp;cformat={wcapi:cformat?}"/>
-    ```
+```xml
+<Url type="application/atom+xml" xmlns:wcapi="http://www.worldcat.org/devnet/wiki/SearchAPIDetails" template="http://worldcat.org/webservices/catalog/search/worldcat/opensearch?q={searchTerms}&amp;start={startIndex?}&amp;count={resultSize?}&amp;format=atom&amp;wskey={wcapi:wskey}&amp;cformat={wcapi:cformat?}"/>
+```
 
 You can access it with the underscore notation:
 
-    ```python
-    results = client.search('zx81', wcapi__wskey="abc123")
-    ```
+```python
+results = client.search('zx81', wcapi__wskey="abc123")
+```
 
 Debugging
 ---------
@@ -59,10 +59,10 @@ Debugging
 If you run into trouble and would like to see what URLs are being accessed
 behind the scenes, turn on logging and set the log level to DEBUG:
 
-    ```python
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
-    ```
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
 
 To Do
 -----
