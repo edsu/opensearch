@@ -1,9 +1,0 @@
-README
-setup.py
-opensearch/__init__.py
-opensearch/client.py
-opensearch/description.py
-opensearch/osfeedparser.py
-opensearch/query.py
-opensearch/results.py
-opensearch/url.py

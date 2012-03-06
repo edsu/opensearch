@@ -1,6 +1,6 @@
-from urlparse import urlparse, urlunparse
-from urllib import urlencode
-from cgi import parse_qs
+import re
+import urllib
+import urlparse
 
 class Query:
     """Represents an opensearch query. Used internally by the Client to 
@@ -23,44 +23,56 @@ class Query:
         from the opensearch Description.
         """
         self.format = format
+        self.url_parts = urlparse.urlparse(format)
+        qsl = urlparse.parse_qsl(self.url_parts[4])
+        self.params = []
 
-        # unpack the url to a tuple
-        self.url_parts = urlparse(format)
-
-        # unpack the query string to a dictionary
-        self.query_string = parse_qs(self.url_parts[4])
-
-        # look for standard macros and create a mapping of the 
-        # opensearch names to the service specific ones
-        # so q={searchTerms} will result in a mapping between searchTerms and q
-        self.macro_map = {}
-        for key,values in self.query_string.items():
-            # TODO eventually optional/required params should be 
-            # distinguished somehow (the ones with/without trailing ?
-            macro = values[0].replace('{','').replace('}','').replace('?','')
-            if macro in Query.standard_macros:
-                self.macro_map[macro] = key
+        for key, value in qsl:
+            self.params.append(Param(key, value))
 
     def url(self):
-        # copy the original query string
-        query_string = dict(self.query_string)
+        # build new query string list substituting any macros
+        # TODO: make sure required params are filled in
+        qsl = []
+        for param in self.params:
+            if param.macro and hasattr(self, param.macro):
+                qsl.append((param.name, getattr(self, param.macro)))
+            elif not param.macro:
+                qsl.append((param.name, param.value))
 
-        # iterate through macros and set the position in the querystring
-        for macro, name in self.macro_map.items():
-            if hasattr(self, macro):
-                # set the name/value pair
-                query_string[name] = [getattr(self, macro)]
-            else:
-                # remove the name/value pair
-                del(query_string[name])
-
-        # copy the url parts and substitute in our new query string
+        # create new url using the query string list
         url_parts = list(self.url_parts)
-        url_parts[4] = urlencode(query_string, 1)
+        url_parts[4] = urllib.urlencode(qsl)
+        return urlparse.urlunparse(tuple(url_parts))
 
-        # recompose and return url
-        return urlunparse(tuple(url_parts))
+    def has_macro(self, macro_name):
+        for param in self.params:
+            if param.macro == macro_name:
+                return True
+        return False
 
-    def has_macro(self, macro):
-        return self.macro_map.has_key(macro)
+class Param:
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value 
+
+        # this ugly regex is looking to capture 'macro' in '{macro}',  
+        # '{prefix:macro}' and '{macro?}' ... sorry
+        match = re.match('^{((.+):)?(.+?)(\?)?}$', value)
+
+        if match:
+            self.prefix = match.group(2)
+            if self.prefix:
+                self.macro = self.prefix + "__" + match.group(3)
+            else:
+                self.macro = match.group(3)
+            self.optional = match.group(4) == "?"
+        else:
+            self.prefix = None
+            self.macro = None
+            self.optional = False
+
+    def __repr__(self):
+        return "param(name=%s, prefix=%s, macro=%s, optional=%s value=%s" % (self.name, self.prefix, self.macro, self.optional, self.value)
 

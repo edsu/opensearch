@@ -1,3 +1,4 @@
 *.pyc
 opensearch.egg-info
 dist
+MANIFEST

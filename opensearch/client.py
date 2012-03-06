@@ -24,7 +24,7 @@ class Client:
         self.agent = agent
         self.description = Description(url, self.agent)
 
-    def search(self, search_terms, page_size=25):
+    def search(self, search_terms, page_size=25, **kwargs):
         """Perform a search and get back a results object
         """
         url = self.description.get_best_template()
@@ -33,6 +33,10 @@ class Client:
         # set up initial values
         query.searchTerms = search_terms
         query.count = page_size
+
+        # add any additional parameters to the query
+        for name, value in kwargs.items():
+            setattr(query, name, value)
 
         # run the results
         return Results(query, agent=self.agent)

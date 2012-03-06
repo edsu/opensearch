@@ -1,5 +1,9 @@
 from opensearch import osfeedparser
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class Results(object):
 
     def __init__(self, query, agent=None):
@@ -44,7 +48,9 @@ class Results(object):
 
 
     def _fetch(self, query):
-        feed  = osfeedparser.opensearch_parse(query.url(), agent=self.agent)
+        url = query.url()
+        logger.debug("fetching %s" % url)
+        feed  = osfeedparser.opensearch_parse(url, agent=self.agent)
         self.feed = feed
 
         # general channel stuff

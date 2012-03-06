@@ -3,10 +3,10 @@ from unittest import TestCase
 
 class ClientTests(TestCase):
 
-    url = 'file:test/description.xml'
+    url = 'http://www.koders.com/search/KodersSourceCodeSearchDescription.xml'
 
     def test_query(self):
         client = Client(ClientTests.url)
         self.assertEqual(client.agent, 'python-opensearch <https://github.com/edsu/opensearch>')
         results = client.search("computer")
-        assert(results.totalResults > 0)
+        self.assertTrue(results.totalResults > 0)
