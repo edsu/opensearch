@@ -1,6 +1,6 @@
-from description import Description
-from query import Query
-from results import Results
+from .description import Description
+from .query import Query
+from .results import Results
 
 class Client:
 

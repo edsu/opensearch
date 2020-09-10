@@ -1,6 +1,10 @@
-from urllib2 import urlopen, Request
+try:
+    from urllib.request import urlopen, Request
+except ImportError:
+    from urllib2 import urlopen, Request
+
 from xml.dom.minidom import parse
-from url import URL
+from .url import URL
 
 class Description:
     """A class for representing OpenSearch Description files.
