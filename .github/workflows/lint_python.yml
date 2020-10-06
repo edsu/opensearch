@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]    # [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [2.7, 3.9]  # [2.7, 3.5, 3.6, 3.7, 3.8, pypy3]
+        python-version: [2.7, 3.9]  # [2.7, 3.6, 3.7, 3.8, 3.9, pypy3]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
       - run: codespell --quiet-level=2 || true  # --ignore-words-list="" --skip=""
       - run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       - run: pip install -r requirements.txt || true
-      - if: matrix.python-version == '3.9.0-rc.1'
+      - if: matrix.python-version != '2.7'
         run: pip install sgmllib3k
       # http://www.koders.com returns Bad Gateway so ignore tests that rely on it
       - run: pytest --ignore=test/test_client.py --ignore=test/test_results.py .
