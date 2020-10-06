@@ -2616,7 +2616,7 @@ if __name__ == '__main__':
     for url in urls:
         print url
         print
-        result = parse(url)
+        result = opensearch_parse(url)
         pprint(result)
         print
 
