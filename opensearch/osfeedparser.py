@@ -10,6 +10,7 @@ Required: Python 2.1 or later
 Recommended: Python 2.3 or later
 Recommended: CJKCodecs and iconv_codec <http://cjkpython.i18n.org/>
 """
+from __future__ import print_function
 
 __version__ = "4.0.2"# + "$Revision: 1.88 $"[11:15] + "-cvs"
 __license__ = """Copyright (c) 2002-2005, Mark Pilgrim, All rights reserved.
@@ -66,11 +67,28 @@ TIDY_MARKUP = 0
 PREFERRED_TIDY_INTERFACES = ["uTidy", "mxTidy"]
 
 # ---------- required modules (should come with any Python distribution) ----------
-import sgmllib, re, sys, copy, urlparse, time, rfc822, types, cgi
+import sgmllib, re, sys, copy, time, types, cgi, urllib
 try:
-    from cStringIO import StringIO as _StringIO
-except:
-    from StringIO import StringIO as _StringIO
+    import rfc822
+except ImportError:
+    rfc822 = None
+try:
+    from urllib.parse import urljoin, urlparse
+    from urllib.request import (build_opener, HTTPDefaultErrorHandler,
+                                HTTPDigestAuthHandler, HTTPRedirectHandler, Request)
+    from urllib.response import addinfourl
+except ImportError:
+    from urllib import addinfourl
+    from urllib2 import (build_opener, HTTPDefaultErrorHandler,
+                         HTTPDigestAuthHandler, HTTPRedirectHandler, Request)
+    from urlparse import urljoin, urlparse
+try:
+    try:
+        from cStringIO import StringIO as _StringIO
+    except:
+        from StringIO import StringIO as _StringIO
+except ImportError:
+    from io import StringIO as _StringIO
 
 # ---------- optional modules (feedparser will work without these, but with reduced functionality) ----------
 
@@ -98,7 +116,7 @@ else:
         timeoutsocket.setDefaultSocketTimeout(20)
     except ImportError:
         pass
-import urllib, urllib2
+
 
 # If a real XML parser is available, feedparser will attempt to use it.  feedparser has
 # been tested with the built-in SAX parser, PyXML, and libxml2.  On platforms where the
@@ -133,6 +151,13 @@ try:
     import iconv_codec
 except:
     pass
+
+try:
+    unichr
+    unicode
+except NameError:
+    unichr = chr
+    unicode = str
 
 # ---------- don't touch these ----------
 class ThingsNobodyCaresAboutButMe(Exception): pass
@@ -197,7 +222,7 @@ class FeedParserDict(UserDict):
         if key == 'categories':
             return [(tag['scheme'], tag['term']) for tag in UserDict.__getitem__(self, 'tags')]
         realkey = self.keymap.get(key, key)
-        if type(realkey) == types.ListType:
+        if type(realkey) == list:
             for k in realkey:
                 if UserDict.has_key(self, k):
                     return UserDict.__getitem__(self, k)
@@ -209,18 +234,18 @@ class FeedParserDict(UserDict):
         for k in self.keymap.keys():
             if key == k:
                 key = self.keymap[k]
-                if type(key) == types.ListType:
+                if type(key) == list:
                     key = key[0]
         return UserDict.__setitem__(self, key, value)
 
     def get(self, key, default=None):
-        if self.has_key(key):
+        if key in self:
             return self[key]
         else:
             return default
 
     def setdefault(self, key, value):
-        if not self.has_key(key):
+        if key not in self:
             self[key] = value
         return self[key]
         
@@ -239,7 +264,7 @@ class FeedParserDict(UserDict):
             assert not key.startswith('_')
             return self.__getitem__(key)
         except:
-            raise AttributeError, "object has no attribute '%s'" % key
+            raise AttributeError("object has no attribute '%s'" % key)
 
     def __setattr__(self, key, value):
         if key.startswith('_') or key == 'data':
@@ -248,7 +273,7 @@ class FeedParserDict(UserDict):
             return self.__setitem__(key, value)
 
     def __contains__(self, key):
-        return self.has_key(key)
+        return key in self
 
 def zopeCompatibilityHack():
     global FeedParserDict
@@ -289,7 +314,7 @@ def _ebcdic_to_ascii(s):
 _urifixer = re.compile('^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)')
 def _urljoin(base, uri):
     uri = _urifixer.sub(r'\1\3', uri)
-    return urlparse.urljoin(base, uri)
+    return urljoin(base, uri)
 
 class _FeedParserMixin:
     namespaces = {'': '',
@@ -428,7 +453,7 @@ class _FeedParserMixin:
                 self.trackNamespace(None, uri)
 
         # track inline content
-        if self.incontent and self.contentparams.has_key('type') and not self.contentparams.get('type', 'xml').endswith('xml'):
+        if self.incontent and 'type' in self.contentparams and not self.contentparams.get('type', 'xml').endswith('xml'):
             # element declared itself as escaped markup, but it isn't really
             self.contentparams['type'] = 'application/xhtml+xml'
         if self.incontent and self.contentparams.get('type') == 'application/xhtml+xml':
@@ -444,7 +469,7 @@ class _FeedParserMixin:
             return self.handle_data('<%s%s>' % (tag, ''.join([' %s="%s"' % t for t in attrs])), escape=0)
 
         # match namespaces
-        if tag.find(':') <> -1:
+        if tag.find(':') != -1:
             prefix, suffix = tag.split(':', 1)
         else:
             prefix, suffix = '', tag
@@ -469,7 +494,7 @@ class _FeedParserMixin:
     def unknown_endtag(self, tag):
         if _debug: sys.stderr.write('end %s\n' % tag)
         # match namespaces
-        if tag.find(':') <> -1:
+        if tag.find(':') != -1:
             prefix, suffix = tag.split(':', 1)
         else:
             prefix, suffix = '', tag
@@ -486,7 +511,7 @@ class _FeedParserMixin:
             self.pop(prefix + suffix)
 
         # track inline content
-        if self.incontent and self.contentparams.has_key('type') and not self.contentparams.get('type', 'xml').endswith('xml'):
+        if self.incontent and 'type' in self.contentparams and not self.contentparams.get('type', 'xml').endswith('xml'):
             # element declared itself as escaped markup, but it isn't really
             self.contentparams['type'] = 'application/xhtml+xml'
         if self.incontent and self.contentparams.get('type') == 'application/xhtml+xml':
@@ -587,11 +612,11 @@ class _FeedParserMixin:
             self.version = 'rss10'
         if loweruri == 'http://www.w3.org/2005/atom' and not self.version:
             self.version = 'atom10'
-        if loweruri.find('backend.userland.com/rss') <> -1:
+        if loweruri.find('backend.userland.com/rss') != -1:
             # match any backend.userland.com namespace
             uri = 'http://backend.userland.com/rss'
             loweruri = uri
-        if self._matchnamespaces.has_key(loweruri):
+        if loweruri in self._matchnamespaces:
             self.namespacemap[prefix] = self._matchnamespaces[loweruri]
             self.namespacesInUse[self._matchnamespaces[loweruri]] = uri
         else:
@@ -712,7 +737,7 @@ class _FeedParserMixin:
         
     def _mapToStandardPrefix(self, name):
         colonpos = name.find(':')
-        if colonpos <> -1:
+        if colonpos != -1:
             prefix = name[:colonpos]
             suffix = name[colonpos+1:]
             prefix = self.namespacemap.get(prefix, prefix)
@@ -775,11 +800,11 @@ class _FeedParserMixin:
     _start_feedinfo = _start_channel
 
     def _cdf_common(self, attrsD):
-        if attrsD.has_key('lastmod'):
+        if 'lastmod' in attrsD:
             self._start_modified({})
             self.elementstack[-1][-1] = attrsD['lastmod']
             self._end_modified()
-        if attrsD.has_key('href'):
+        if 'href' in attrsD:
             self._start_link({})
             self.elementstack[-1][-1] = attrsD['href']
             self._end_link()
@@ -1155,7 +1180,7 @@ class _FeedParserMixin:
         attrsD.setdefault('rel', 'alternate')
         attrsD.setdefault('type', 'text/html')
         attrsD = self._itsAnHrefDamnIt(attrsD)
-        if attrsD.has_key('href'):
+        if 'href' in attrsD:
             attrsD['href'] = self.resolveURI(attrsD['href'])
         expectingText = self.infeed or self.inentry or self.insource
         context = self._getContext()
@@ -1163,7 +1188,7 @@ class _FeedParserMixin:
         context['links'].append(FeedParserDict(attrsD))
         if attrsD['rel'] == 'enclosure':
             self._start_enclosure(attrsD)
-        if attrsD.has_key('href'):
+        if 'href' in attrsD:
             expectingText = 0
             if (attrsD.get('rel') == 'alternate') and (self.mapContentType(attrsD.get('type')) in self.html_types):
                 context['link'] = attrsD['href']
@@ -1186,7 +1211,7 @@ class _FeedParserMixin:
 
     def _end_guid(self):
         value = self.pop('id')
-        self._save('guidislink', self.guidislink and not self._getContext().has_key('link'))
+        self._save('guidislink', self.guidislink and 'link' not in self._getContext())
         if self.guidislink:
             # guid acts as link, but only if 'ispermalink' is not present or is 'true',
             # and only if the item doesn't already have a link element
@@ -1209,7 +1234,7 @@ class _FeedParserMixin:
 
     def _start_description(self, attrsD):
         context = self._getContext()
-        if context.has_key('summary'):
+        if 'summary' in context:
             self._summaryKey = 'content'
             self._start_content(attrsD)
         else:
@@ -1242,7 +1267,7 @@ class _FeedParserMixin:
     def _start_generator(self, attrsD):
         if attrsD:
             attrsD = self._itsAnHrefDamnIt(attrsD)
-            if attrsD.has_key('href'):
+            if 'href' in attrsD:
                 attrsD['href'] = self.resolveURI(attrsD['href'])
         self._getContext()['generator_detail'] = FeedParserDict(attrsD)
         self.push('generator', 1)
@@ -1250,7 +1275,7 @@ class _FeedParserMixin:
     def _end_generator(self):
         value = self.pop('generator')
         context = self._getContext()
-        if context.has_key('generator_detail'):
+        if 'generator_detail' in context:
             context['generator_detail']['name'] = value
             
     def _start_admin_generatoragent(self, attrsD):
@@ -1270,7 +1295,7 @@ class _FeedParserMixin:
         
     def _start_summary(self, attrsD):
         context = self._getContext()
-        if context.has_key('summary'):
+        if 'summary' in context:
             self._summaryKey = 'content'
             self._start_content(attrsD)
         else:
@@ -1360,7 +1385,7 @@ if _XML_AVAILABLE:
         def startElementNS(self, name, qname, attrs):
             namespace, localname = name
             lowernamespace = str(namespace or '').lower()
-            if lowernamespace.find('backend.userland.com/rss') <> -1:
+            if lowernamespace.find('backend.userland.com/rss') != -1:
                 # match any backend.userland.com namespace
                 namespace = 'http://backend.userland.com/rss'
                 lowernamespace = namespace
@@ -1369,8 +1394,8 @@ if _XML_AVAILABLE:
             else:
                 givenprefix = None
             prefix = self._matchnamespaces.get(lowernamespace, givenprefix)
-            if givenprefix and (prefix == None or (prefix == '' and lowernamespace == '')) and not self.namespacesInUse.has_key(givenprefix):
-                    raise UndeclaredNamespace, "'%s' is not associated with a namespace" % givenprefix
+            if givenprefix and (prefix == None or (prefix == '' and lowernamespace == '')) and givenprefix not in self.namespacesInUse:
+                    raise UndeclaredNamespace("'%s' is not associated with a namespace" % givenprefix)
             if prefix:
                 localname = prefix + ':' + localname
             localname = str(localname).lower()
@@ -1548,7 +1573,7 @@ class _LooseFeedParser(_FeedParserMixin, _BaseHTMLProcessor):
         data = data.replace('&#x22;', '&quot;')
         data = data.replace('&#39;', '&apos;')
         data = data.replace('&#x27;', '&apos;')
-        if self.contentparams.has_key('type') and not self.contentparams.get('type', 'xml').endswith('xml'):
+        if 'type' in self.contentparams and not self.contentparams.get('type', 'xml').endswith('xml'):
             data = data.replace('&lt;', '<')
             data = data.replace('&gt;', '>')
             data = data.replace('&amp;', '&')
@@ -1693,28 +1718,28 @@ def _sanitizeHTML(htmlSource, encoding):
     data = data.strip().replace('\r\n', '\n')
     return data
 
-class _FeedURLHandler(urllib2.HTTPDigestAuthHandler, urllib2.HTTPRedirectHandler, urllib2.HTTPDefaultErrorHandler):
+class _FeedURLHandler(HTTPDigestAuthHandler, HTTPRedirectHandler, HTTPDefaultErrorHandler):
     def http_error_default(self, req, fp, code, msg, headers):
         if ((code / 100) == 3) and (code != 304):
             return self.http_error_302(req, fp, code, msg, headers)
-        infourl = urllib.addinfourl(fp, headers, req.get_full_url())
+        infourl = addinfourl(fp, headers, req.get_full_url())
         infourl.status = code
         return infourl
 
     def http_error_302(self, req, fp, code, msg, headers):
-        if headers.dict.has_key('location'):
-            infourl = urllib2.HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
+        if 'location' in headers.dict:
+            infourl = HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
         else:
-            infourl = urllib.addinfourl(fp, headers, req.get_full_url())
+            infourl = addinfourl(fp, headers, req.get_full_url())
         if not hasattr(infourl, 'status'):
             infourl.status = code
         return infourl
 
     def http_error_301(self, req, fp, code, msg, headers):
-        if headers.dict.has_key('location'):
-            infourl = urllib2.HTTPRedirectHandler.http_error_301(self, req, fp, code, msg, headers)
+        if 'location' in headers.dict:
+            infourl = HTTPRedirectHandler.http_error_301(self, req, fp, code, msg, headers)
         else:
-            infourl = urllib.addinfourl(fp, headers, req.get_full_url())
+            infourl = addinfourl(fp, headers, req.get_full_url())
         if not hasattr(infourl, 'status'):
             infourl.status = code
         return infourl
@@ -1734,7 +1759,7 @@ class _FeedURLHandler(urllib2.HTTPDigestAuthHandler, urllib2.HTTPRedirectHandler
         # header the server sent back (for the realm) and retry
         # the request with the appropriate digest auth headers instead.
         # This evil genius hack has been brought to you by Aaron Swartz.
-        host = urlparse.urlparse(req.get_full_url())[1]
+        host = urlparse(req.get_full_url())[1]
         try:
             assert sys.version.split()[0] >= '2.3.3'
             assert base64 != None
@@ -1780,7 +1805,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
     if url_file_stream_or_string == '-':
         return sys.stdin
 
-    if urlparse.urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp'):
+    if urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp'):
         if not agent:
             agent = USER_AGENT
         # test for inline user:password for basic auth
@@ -1794,7 +1819,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
                     url_file_stream_or_string = '%s://%s%s' % (urltype, realhost, rest)
                     auth = base64.encodestring(user_passwd).strip()
         # try to open with urllib2 (to use optional headers)
-        request = urllib2.Request(url_file_stream_or_string)
+        request = Request(url_file_stream_or_string)
         request.add_header('User-Agent', agent)
         if etag:
             request.add_header('If-None-Match', etag)
@@ -1821,7 +1846,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
         if ACCEPT_HEADER:
             request.add_header('Accept', ACCEPT_HEADER)
         request.add_header('A-IM', 'feed') # RFC 3229 support
-        opener = apply(urllib2.build_opener, tuple([_FeedURLHandler()] + handlers))
+        opener = build_opener(*tuple([_FeedURLHandler()] + handlers))
         opener.addheaders = [] # RMK - must clear so we only send our custom User-Agent
         try:
             return opener.open(request)
@@ -1869,9 +1894,15 @@ _iso8601_re = [
     + r'(:(?P<second>\d{2}))?'
     + r'(?P<tz>[+-](?P<tzhour>\d{2})(:(?P<tzmin>\d{2}))?|Z)?)?'
     for tmpl in _iso8601_tmpl]
-del tmpl
+try:
+    del tmpl  # noqa: F821
+except NameError:
+    pass  # Python 3 scoping rules
 _iso8601_matches = [re.compile(regex).match for regex in _iso8601_re]
-del regex
+try:
+    del regex  # noqa: F821
+except NameError:
+    pass  # Python 3 scoping rules
 def _parse_date_iso8601(dateString):
     '''Parse a variety of ISO-8601-compatible formats like 20040105'''
     m = None
@@ -2241,7 +2272,7 @@ def _parse_date(dateString):
                 raise ValueError
             map(int, date9tuple)
             return date9tuple
-        except Exception, e:
+        except Exception as e:
             if _debug: sys.stderr.write('%s raised %s\n' % (handler.__name__, repr(e)))
             pass
     return None
@@ -2376,7 +2407,7 @@ def _getCharacterEncoding(http_headers, xml_data):
         true_encoding = http_encoding or 'us-ascii'
     elif http_content_type.startswith('text/'):
         true_encoding = http_encoding or 'us-ascii'
-    elif http_headers and (not http_headers.has_key('content-type')):
+    elif http_headers and ('content-type' not in http_headers):
         true_encoding = xml_encoding or 'iso-8859-1'
     else:
         true_encoding = xml_encoding or 'utf-8'
@@ -2465,7 +2496,7 @@ def opensearch_parse(url_file_stream_or_string, etag=None, modified=None, agent=
     try:
         f = _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, handlers)
         data = f.read()
-    except Exception, e:
+    except Exception as e:
         result['bozo'] = 1
         result['bozo_exception'] = e
         data = ''
@@ -2476,7 +2507,7 @@ def opensearch_parse(url_file_stream_or_string, etag=None, modified=None, agent=
         if gzip and f.headers.get('content-encoding', '') == 'gzip':
             try:
                 data = gzip.GzipFile(fileobj=_StringIO(data)).read()
-            except Exception, e:
+            except Exception as e:
                 # Some feeds claim to be gzipped but they're not, so
                 # we get garbage.  Ideally, we should re-request the
                 # feed without the 'Accept-encoding: gzip' header,
@@ -2487,7 +2518,7 @@ def opensearch_parse(url_file_stream_or_string, etag=None, modified=None, agent=
         elif zlib and f.headers.get('content-encoding', '') == 'deflate':
             try:
                 data = zlib.decompress(data, -zlib.MAX_WBITS)
-            except Exception, e:
+            except Exception as e:
                 result['bozo'] = 1
                 result['bozo_exception'] = e
                 data = ''
@@ -2518,7 +2549,7 @@ def opensearch_parse(url_file_stream_or_string, etag=None, modified=None, agent=
     result['encoding'], http_encoding, xml_encoding, sniffed_xml_encoding, acceptable_content_type = \
         _getCharacterEncoding(http_headers, data)
     if http_headers and (not acceptable_content_type):
-        if http_headers.has_key('content-type'):
+        if 'content-type' in http_headers:
             bozo_message = '%s is not an XML media type' % http_headers['content-type']
         else:
             bozo_message = 'no Content-type specified'
@@ -2587,7 +2618,7 @@ def opensearch_parse(url_file_stream_or_string, etag=None, modified=None, agent=
             saxparser._ns_stack.append({'http://www.w3.org/XML/1998/namespace':'xml'})
         try:
             saxparser.parse(source)
-        except Exception, e:
+        except Exception as e:
             if _debug:
                 import traceback
                 traceback.print_stack()
@@ -2607,18 +2638,18 @@ def opensearch_parse(url_file_stream_or_string, etag=None, modified=None, agent=
 
 if __name__ == '__main__':
     if not sys.argv[1:]:
-        print __doc__
+        print(__doc__)
         sys.exit(0)
     else:
         urls = sys.argv[1:]
     zopeCompatibilityHack()
     from pprint import pprint
     for url in urls:
-        print url
-        print
+        print(url)
+        print()
         result = opensearch_parse(url)
         pprint(result)
-        print
+        print()
 
 #REVISION HISTORY
 #1.0 - 9/27/2002 - MAP - fixed namespace processing on prefixed RSS 2.0 elements,
