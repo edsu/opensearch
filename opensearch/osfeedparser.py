@@ -71,7 +71,7 @@ import sgmllib, re, sys, copy, time, types, cgi, urllib
 try:
     import rfc822
 except ImportError:
-    from email.utils import getaddresses as rfc822
+    rfc822 = None
 try:
     from urllib.parse import urljoin, urlparse
     from urllib.request import (build_opener, HTTPDefaultErrorHandler,
@@ -2257,9 +2257,10 @@ def _parse_date_rfc822(dateString):
         return time.gmtime(rfc822.mktime_tz(tm))
 # rfc822.py defines several time zones, but we define some extra ones.
 # 'ET' is equivalent to 'EST', etc.
-_additional_timezones = {'AT': -400, 'ET': -500, 'CT': -600, 'MT': -700, 'PT': -800}
-rfc822._timezones.update(_additional_timezones)
-registerDateHandler(_parse_date_rfc822)    
+if rfc822;
+    _additional_timezones = {'AT': -400, 'ET': -500, 'CT': -600, 'MT': -700, 'PT': -800}
+    rfc822._timezones.update(_additional_timezones)
+    registerDateHandler(_parse_date_rfc822)    
 
 def _parse_date(dateString):
     '''Parses a variety of date formats into a 9-tuple in GMT'''
