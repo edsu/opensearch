@@ -2257,7 +2257,7 @@ def _parse_date_rfc822(dateString):
         return time.gmtime(rfc822.mktime_tz(tm))
 # rfc822.py defines several time zones, but we define some extra ones.
 # 'ET' is equivalent to 'EST', etc.
-if rfc822;
+if rfc822:
     _additional_timezones = {'AT': -400, 'ET': -500, 'CT': -600, 'MT': -700, 'PT': -800}
     rfc822._timezones.update(_additional_timezones)
     registerDateHandler(_parse_date_rfc822)    
