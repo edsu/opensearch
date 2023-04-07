@@ -71,7 +71,7 @@ import sgmllib, re, sys, copy, time, types, cgi, urllib
 try:
     import rfc822
 except ImportError:
-    import email.utils.getaddresses as rfc822
+    from email.utils import getaddresses as rfc822
 try:
     from urllib.parse import urljoin, urlparse
     from urllib.request import (build_opener, HTTPDefaultErrorHandler,
